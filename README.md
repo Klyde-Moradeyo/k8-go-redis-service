@@ -65,3 +65,30 @@ params:
 - Limits: The maximum resources a Pod can use. If a Pod exceeds its limit, Kubernetes will intervene (e.g., by throttling CPU or terminating the Pod).
 
 Remember, if set, `requests` should be less than or equal to `limits`. If they're not set, Kubernetes uses default values based on node capacity.
+
+# Securing the Redis Pod
+
+The Redis database is protected using the following measures:
+
+- **Secret:** A secret named `redis-secret` is created to store the Redis password. The password is stored in base64-encoded format.
+
+- **Persistent Volume Claim:** A persistent volume claim named `redis-pvc` is created to provide persistent storage for the Redis data. It has a storage request of 1Gi.
+
+- **ConfigMap:** A ConfigMap named `redis-config` is created to store the Redis configuration. The Redis password is injected into the `redis.conf` file using the `${REDIS_PASSWORD}` placeholder.
+
+- **Deployment:** A deployment named `redis` is created to manage the Redis container. The Redis image used is `redis:6.2-alpine`. The Redis password is provided as an environment variable (`REDIS_PASSWORD`) sourced from the `redis-secret` secret. The deployment ensures that only one replica of the Redis pod is available at any given time during rolling updates. Resource limits and requests are defined for the container.
+
+- **Volumes:** Two volumes are used by the Redis container. The first one is a persistent volume claim (`redis-pvc`) used for storing the Redis data. The second volume is a config map (`redis-config`) used to provide the Redis configuration.
+
+- **Probes:** Readiness and liveness probes are configured for the Redis container to ensure its availability. The probes execute Redis commands using the provided password to check the health of the Redis instance.
+
+- **Horizontal Pod Autoscaler:** An autoscaler named `redis-hpa` is created to automatically scale the Redis deployment based on CPU utilization. It ensures a minimum of 1 replica and a maximum of 5 replicas, with a target average CPU utilization of 75%.
+
+- **Service:** A service named `redis` is created to expose the Redis deployment internally. It listens on port 6379.
+
+
+The configMap block in the provided Kubernetes manifest is used to inject the Redis configuration file into the Redis pod. The data block specifies the key-value pairs for the configuration. In this case, the key is redis.conf, and the value is the content of the Redis configuration file.
+
+When the Redis pod is created, the redis.conf file is mounted as a volume using the configMap volume type. This volume is then mounted at a specific path inside the pod, which is determined by the mountPath specified in the container configuration.
+
+In the given manifest, the redis.conf file from the redis-config ConfigMap is mounted at the root directory (/) of the Redis pod. This means that the Redis configuration file will be available at the path /redis.conf inside the pod.
