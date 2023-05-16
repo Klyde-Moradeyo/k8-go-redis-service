@@ -42,3 +42,19 @@ Two important parameters in this strategy are:
 - maxUnavailable: This is the maximum number of Pods that can be unavailable during the update process. The value can be an absolute number (for example, 1) or a percentage of desired Pods (for example, 10%). The absolute number is calculated from the percentage by rounding down.
 
 - maxSurge: This is the maximum number of Pods that can be scheduled above the original number of Pods. The value can also be an absolute number or a percentage of desired Pods. The absolute number is calculated from percentage by rounding up.
+
+To start a rolling update (e.g for cases where there is a new latest image):
+```
+kubectl set env deployment/go-lang-app UPDATE_TIMESTAMP="$(date)" # Trigger a rolling update an environment variable
+kubectl rollout status deployment/go-lang-app # check status
+```
+
+## Liveness and Readiness Probes
+- livenessProbe: Kubernetes uses liveness probes to know when to restart a Container. If the liveness probe fails, the Container is restarted.
+
+- readinessProbe: Readiness probes are used to decide when the Container is ready to start accepting traffic. If the readiness probe fails, the Pod is marked as Unready. 
+
+params:
+- `initialDelaySeconds`: ives your container some time to initialize and start up before Kubernetes starts checking its health or readiness.
+- `periodSeconds`: determines how often Kubernetes will check the health or readiness of your container after the initial delay
+

@@ -28,4 +28,16 @@ spec:
         - name: REDIS_HOST
           value: redis
         - name: REDIS_PORT
-          value: "6379"
+          value: "6379"        livenessProbe:
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
