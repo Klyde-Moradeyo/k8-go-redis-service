@@ -28,7 +28,11 @@ spec:
         - name: REDIS_HOST
           value: redis
         - name: REDIS_PORT
-          value: "6379"        livenessProbe:
+          value: "6379"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "500Mi"
         livenessProbe:
           httpGet:
             path: /healthz

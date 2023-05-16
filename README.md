@@ -58,3 +58,10 @@ params:
 - `initialDelaySeconds`: ives your container some time to initialize and start up before Kubernetes starts checking its health or readiness.
 - `periodSeconds`: determines how often Kubernetes will check the health or readiness of your container after the initial delay
 
+# Resource Requests and Limits
+
+- Requests: The resources a Pod is guaranteed to have. Used by Kubernetes to decide where to place Pods.
+
+- Limits: The maximum resources a Pod can use. If a Pod exceeds its limit, Kubernetes will intervene (e.g., by throttling CPU or terminating the Pod).
+
+Remember, if set, `requests` should be less than or equal to `limits`. If they're not set, Kubernetes uses default values based on node capacity.

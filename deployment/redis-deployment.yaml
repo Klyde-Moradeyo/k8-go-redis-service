@@ -28,6 +28,13 @@ spec:
               key: redis-password
         ports:
         - containerPort: 6379
+        resources:
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
         readinessProbe:
           exec:
             command:
