@@ -15,3 +15,7 @@ The entire solution should be able to run on an fresh ubuntu VM.
 - Application must be able to survive the failure of one or more instances while staying highly-available
 - Redis must be password protected
 
+
+## Building the Docker image
+Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
+
