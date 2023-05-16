@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PORT=8080
+export PORT=80
 export REDIS_HOST=localhost
 export REDIS_PORT=6379
 # export REDIS_PASSWORD=your_redis_password
