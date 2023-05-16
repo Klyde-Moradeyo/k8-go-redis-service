@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-lang-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: go-lang-app
+  template:
+    metadata:
+      labels:
+        app: go-lang-app
+    spec:
+      containers:
+      - name: go-lang-app
+        image: localhost:5000/simple-go-service
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
