@@ -74,6 +74,20 @@ func main() {
 			c.Status(http.StatusOK)
 		}
 	})
+	
+	router.GET("/healthz", func(c *gin.Context) {
+		// Simply return OK if the server is running
+		c.Status(http.StatusOK)
+	})
+	
+	router.GET("/ready", func(c *gin.Context) {
+		// Check connection to Redis to determine readiness
+		if _, err := r.Ping(context.Background()).Result(); err != nil {
+			c.Status(http.StatusInternalServerError)
+		} else {
+			c.Status(http.StatusOK)
+		}
+	})
 
 	_ = router.Run(fmt.Sprintf(":%d", c.Port))
 }
