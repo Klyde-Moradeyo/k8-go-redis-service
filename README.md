@@ -8,6 +8,21 @@ I am going to deploy this application, and all its dependencies (in this case, r
 
 The entire solution should be able to run on an fresh ubuntu VM.
 
+# Table of Contents
+1. [Overview](#overview)
+2. [Requirements](#requirements)
+3. [Components](#components)
+   1. [Go-lang App](#go-lang-app)
+   2. [Redis](#redis)
+4. [Stress testing the deployment](#stress-testing-the-deployment)
+5. [Useful Info](#useful-info)
+   1. [Building the Docker image](#building-the-docker-image)
+   2. [Update Strategy: Rolling Update](#update-strategy-rolling-update)
+   3. [Liveness and Readiness Probes](#liveness-and-readiness-probes)
+   4. [Resource Requests and Limits](#resource-requests-and-limits)
+   5. [Securing the Redis Pod](#securing-the-redis-pod)
+
+
 ## Requirements
 
 - Simple to build and run
@@ -32,6 +47,11 @@ The Redis manifests consist of the following resources:
 - Secret: Stores the Redis password securely.
 - Service: Exposes Redis as a service on port 6379.
 
+
+# Stress testing the deployment
+There is python stress testing script in 
+
+# Useful Info
 ## Building the Docker image
 Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
 
@@ -74,7 +94,7 @@ params:
 - `initialDelaySeconds`: ives your container some time to initialize and start up before Kubernetes starts checking its health or readiness.
 - `periodSeconds`: determines how often Kubernetes will check the health or readiness of your container after the initial delay
 
-# Resource Requests and Limits
+## Resource Requests and Limits
 
 - Requests: The resources a Pod is guaranteed to have. Used by Kubernetes to decide where to place Pods.
 
@@ -82,7 +102,7 @@ params:
 
 Remember, if set, `requests` should be less than or equal to `limits`. If they're not set, Kubernetes uses default values based on node capacity.
 
-# Securing the Redis Pod
+## Securing the Redis Pod
 
 The Redis database is protected using the following measures:
 
