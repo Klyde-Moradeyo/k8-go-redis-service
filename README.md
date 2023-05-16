@@ -19,6 +19,21 @@ The entire solution should be able to run on an fresh ubuntu VM.
 ## Building the Docker image
 Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
 
+**commands**:
+```
+docker run -d -p 5000:5000 --restart=always --name registry registry:2
+docker build . -t simple-go-service
+docker tag simple-go-service localhost:5000/simple-go-service
+docker push localhost:5000/simple-go-service
+
+# Removing locally-cached image
+docker image remove simple-go-service
+docker image remove localhost:5000/simple-go-service
+
+# You can still pull from your local registry
+docker pull localhost:5000/my-ubuntu
+```
+
 ## Update Strategy: Rolling Update
 Rolling updates gradually update Pods instances with new ones. This is done in a controlled way that ensures that at least one instance of your application is available during the update.
 
