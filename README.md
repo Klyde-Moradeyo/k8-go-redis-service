@@ -15,6 +15,22 @@ The entire solution should be able to run on an fresh ubuntu VM.
 - Application must be able to survive the failure of one or more instances while staying highly-available
 - Redis must be password protected
 
+# Components
+## Go-lang App
+The Go-lang app manifests consist of the following resources:
+
+- Deployment: Deploys the Go-lang app containers with specified resources, liveness and readiness probes, and environment variables.
+- HorizontalPodAutoscaler: Automatically scales the Go-lang app based on CPU utilization.
+- Service: Exposes the Go-lang app as a LoadBalancer service on port 80.
+
+## Redis
+The Redis manifests consist of the following resources:
+
+- Deployment: Deploys the Redis container with specified resources, liveness and readiness probes, environment variables, and volume mounts.
+- HorizontalPodAutoscaler: Automatically scales Redis based on CPU utilization.
+- PersistentVolumeClaim: Requests storage for Redis data.
+- Secret: Stores the Redis password securely.
+- Service: Exposes Redis as a service on port 6379.
 
 ## Building the Docker image
 Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
