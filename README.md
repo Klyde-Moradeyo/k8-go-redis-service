@@ -1,6 +1,6 @@
-# k8-go-redis-service
+# Kubernetes Go and Redis service
 
-## Overview
+# Overview
 
 This repository contains a simple golang service which serves a single endpoint: `/:id`. For each call to this endpoint, the service increments a counter, and returns the number of times the endpoint has been called for the given ID. State for the application is stored in and retrieved from redis, where the data is stored simply with `id` as the key, and the count as the value.
 
@@ -16,19 +16,21 @@ The entire solution should be able to run on an fresh ubuntu VM.
    2. [Redis](#redis)
 4. [Stress testing the deployment](#stress-testing-the-deployment)
 5. [Useful Info](#useful-info)
-   1. [Building the Docker image](#building-the-docker-image)
-   2. [Update Strategy: Rolling Update](#update-strategy-rolling-update)
-   3. [Liveness and Readiness Probes](#liveness-and-readiness-probes)
-   4. [Resource Requests and Limits](#resource-requests-and-limits)
-   5. [Securing the Redis Pod](#securing-the-redis-pod)
+   1. [Connecting to the Pod](#connecting-to-the-pod)
+   2. [Building the Docker image](#building-the-docker-image)
+   3. [Update Strategy: Rolling Update](#update-strategy-rolling-update)
+   4. [Liveness and Readiness Probes](#liveness-and-readiness-probes)
+   5. [Resource Requests and Limits](#resource-requests-and-limits)
+   6. [Securing the Redis Pod](#securing-the-redis-pod)
 
 
-## Requirements
+
+# Requirements
 
 - Simple to build and run
 - Application is able to be deployed on kubernetes and can be accessed from outside the cluster
 - Application must be able to survive the failure of one or more instances while staying highly-available
-- Redis must be password protected
+- Redis must be password protected 
 
 # Components
 ## Go-lang App
@@ -139,3 +141,26 @@ The configMap block in the provided Kubernetes manifest is used to inject the Re
 When the Redis pod is created, the redis.conf file is mounted as a volume using the configMap volume type. This volume is then mounted at a specific path inside the pod, which is determined by the mountPath specified in the container configuration.
 
 In the given manifest, the redis.conf file from the redis-config ConfigMap is mounted at the root directory (/) of the Redis pod. This means that the Redis configuration file will be available at the path /redis.conf inside the pod.
+
+## Horizontal Pod Autoscaler
+The HorizontalPodAutoscaler (HPA) is set to automatically scale the number of Go application pods based on the CPU utilization. The minReplicas is set to 1, meaning there will be at least 1 pod running at all times. The maxReplicas is set to 5, which is the maximum number of pods that can be running at once. The target CPU utilization is set to 50%, meaning if the CPU usage exceeds this threshold, the HPA will add more pods (up to maxReplicas).
+
+The metrics server are required for horizontal pod autoscaler. This will apply the manifest file for the latest release (v0.6.3 at the time of writing) from the metrics server's GitHub repository:
+```
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.3/components.yaml 
+```
+
+### Skip the certificate verification in metrics server:
+1. Commmand `kubectl -n kube-system edit deploy metrics-server`
+2. Under the spec.template.spec.containers.args section, add the --kubelet-insecure-tls argument like so:
+```
+- args:
+  - --cert-dir=/tmp
+  - --secure-port=4443
+  - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+  - --kubelet-use-node-status-port
+  - --kubelet-insecure-tls
+```
+3. Save and exit
+
+**IMPORTANT**: While this solution is fine for development environments like Docker Desktop, it is not recommended for production environments because it lowers the security of your cluster. In a production environment, you should use valid certificates with the appropriate Subject Alternative Names (SANs).
