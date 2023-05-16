@@ -19,3 +19,11 @@ The entire solution should be able to run on an fresh ubuntu VM.
 ## Building the Docker image
 Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
 
+## Update Strategy: Rolling Update
+Rolling updates gradually update Pods instances with new ones. This is done in a controlled way that ensures that at least one instance of your application is available during the update.
+
+Two important parameters in this strategy are:
+
+- maxUnavailable: This is the maximum number of Pods that can be unavailable during the update process. The value can be an absolute number (for example, 1) or a percentage of desired Pods (for example, 10%). The absolute number is calculated from the percentage by rounding down.
+
+- maxSurge: This is the maximum number of Pods that can be scheduled above the original number of Pods. The value can also be an absolute number or a percentage of desired Pods. The absolute number is calculated from percentage by rounding up.
