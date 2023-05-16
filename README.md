@@ -49,9 +49,20 @@ The Redis manifests consist of the following resources:
 
 
 # Stress testing the deployment
-There is python stress testing script in 
+This repository contains a Python script(`script/locust.py`) using the Locust framework to perform load testing on a deployment. The script simulates concurrent user traffic and measures the performance of the deployment under load.
+To test, I advice going to the `load_test` branch in the repository. The average CPU utilization for the app are set to 4% which is ideal for the service.
+
+Set the following variables according to your desired configuration:
+- number_of_users: Total number of concurrent users that will be simulated in the load test.
+- spawn_rate: Rate at which users are spawned per second.
+- duration_in_seconds: Total duration for which the load test will run.
 
 # Useful Info
+## Connecting to the pod
+```
+kubectl exec -it <pod> -- /bin/sh
+```
+
 ## Building the Docker image
 Read this [doc](https://docs.docker.com/registry/deploying/) to push the image to your local docker registry
 
