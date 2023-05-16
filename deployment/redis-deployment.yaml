@@ -1,3 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+data:
+  redis.conf: |
+    requirepass ${REDIS_PASSWORD}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,6 +43,9 @@ spec:
           limits:
             memory: "500Mi"
             cpu: "500m"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
         readinessProbe:
           exec:
             command:
@@ -51,6 +62,13 @@ spec:
             - redis-cli -a $(REDIS_PASSWORD) ping
           initialDelaySeconds: 15
           periodSeconds: 20
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim:
+          claimName: redis-pvc
+      - name: redis-config
+        configMap:
+          name: redis-config
 ---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
