@@ -1,0 +1,1 @@
+# k8-go-redis-service
