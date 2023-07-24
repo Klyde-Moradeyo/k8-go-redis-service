@@ -2,26 +2,34 @@
 
 # Overview
 
-This repository contains a simple golang service which serves a single endpoint: `/:id`. For each call to this endpoint, the service increments a counter, and returns the number of times the endpoint has been called for the given ID. State for the application is stored in and retrieved from redis, where the data is stored simply with `id` as the key, and the count as the value.
+This repository houses a robust Golang service that operates a single endpoint: `/:id`. Each invocation of this endpoint increments a counter and returns the count of times the endpoint has been accessed for the specified ID. The application's state is managed via Redis, where the data is stored with `id` as the key and the count as the value.
 
-I am going to deploy this application, and all its dependencies (in this case, redis) on kubernetes. It will be accessible from outside the cluster via HTTP, and should be deployed with high-availability in mind
+The application, along with its dependencies (Redis in this case), is designed to be deployed on Kubernetes. It is externally accessible via HTTP and is architected with high-availability in mind, ensuring resilience and uptime even in the event of instance failures. The application and Redis are deployed as separate services, each with their own deployments and horizontal pod autoscalers to ensure scalability and high availability.
 
-The entire solution should be able to run on an fresh ubuntu VM.
+The Redis service is secured using a Kubernetes Secret to store the password, and its data is stored in a Persistent Volume Claim to ensure data persistence across pod restarts. The Golang application is exposed externally via a LoadBalancer service, and it communicates with the Redis service within the cluster.
+
+The entire solution is engineered to operate seamlessly on a fresh Ubuntu VM, providing a streamlined deployment process. It includes a Python script for stress testing the deployment, ensuring that the application can handle high loads and scale appropriately.
+
+The repository also provides detailed instructions on how to connect to the pod, build the Docker image, perform rolling updates, set up liveness and readiness probes, configure resource requests and limits, and secu
 
 # Table of Contents
-1. [Overview](#overview)
-2. [Requirements](#requirements)
-3. [Components](#components)
-   1. [Go-lang App](#go-lang-app)
-   2. [Redis](#redis)
-4. [Stress testing the deployment](#stress-testing-the-deployment)
-5. [Useful Info](#useful-info)
-   1. [Connecting to the Pod](#connecting-to-the-pod)
-   2. [Building the Docker image](#building-the-docker-image)
-   3. [Update Strategy: Rolling Update](#update-strategy-rolling-update)
-   4. [Liveness and Readiness Probes](#liveness-and-readiness-probes)
-   5. [Resource Requests and Limits](#resource-requests-and-limits)
-   6. [Securing the Redis Pod](#securing-the-redis-pod)
+- [Kubernetes Go and Redis service](#kubernetes-go-and-redis-service)
+- [Overview](#overview)
+- [Table of Contents](#table-of-contents)
+- [Requirements](#requirements)
+- [Components](#components)
+  - [Go-lang App](#go-lang-app)
+  - [Redis](#redis)
+- [Stress testing the deployment](#stress-testing-the-deployment)
+- [Useful Info](#useful-info)
+  - [Connecting to the pod](#connecting-to-the-pod)
+  - [Building the Docker image](#building-the-docker-image)
+  - [Update Strategy: Rolling Update](#update-strategy-rolling-update)
+  - [Liveness and Readiness Probes](#liveness-and-readiness-probes)
+  - [Resource Requests and Limits](#resource-requests-and-limits)
+  - [Securing the Redis Pod](#securing-the-redis-pod)
+  - [Horizontal Pod Autoscaler](#horizontal-pod-autoscaler)
+    - [Skip the certificate verification in metrics server:](#skip-the-certificate-verification-in-metrics-server)
 
 
 
