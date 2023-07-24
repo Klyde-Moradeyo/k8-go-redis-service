@@ -10,7 +10,7 @@ The Redis service is secured using a Kubernetes Secret to store the password, an
 
 The entire solution is engineered to operate seamlessly on a fresh Ubuntu VM, providing a streamlined deployment process. It includes a Python script for stress testing the deployment, ensuring that the application can handle high loads and scale appropriately.
 
-The repository also provides detailed instructions on how to connect to the pod, build the Docker image, perform rolling updates, set up liveness and readiness probes, configure resource requests and limits, and secu
+The repository also provides helpful info on how to connect to the pod, build the Docker image, perform rolling updates, set up liveness and readiness probes, configure resource requests and limits, and secure the redis pod.
 
 # Table of Contents
 - [Kubernetes Go and Redis service](#kubernetes-go-and-redis-service)
